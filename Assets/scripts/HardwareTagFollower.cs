@@ -11,7 +11,9 @@ public class HardwareTagFollower : MonoBehaviour
     [Tooltip("캐릭터가 목표 지점을 향해 쫓아가는 속도입니다.")]
     public float moveSpeed = 10f; 
 
-    private Vector3 targetPosition;
+    [Header("Debug Monitor")]
+    [Tooltip("서버에서 실시간으로 받아온 목표 좌표입니다.")]
+    [SerializeField] private Vector3 targetPosition; // [SerializeField]를 추가하여 인스펙터에 노출
 
     void Start()
     {
