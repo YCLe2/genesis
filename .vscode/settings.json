@@ -60,14 +60,14 @@
         "*.asset": "yaml",
         "*.meta": "yaml",
         "*.prefab": "yaml",
-        "*.unity": "yaml",
+        "*.unity": "yaml"
     },
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.patterns": {
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "My project (3).slnx",
+    "dotnet.defaultSolution": "genesis.slnx",
     "dotnet.enableWorkspaceBasedDevelopment": false,
     "git.ignoreLimitWarning": true
 }
