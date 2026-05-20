@@ -67,7 +67,7 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "genesis.slnx",
+    "dotnet.defaultSolution": "My project (3).slnx",
     "dotnet.enableWorkspaceBasedDevelopment": false,
     "git.ignoreLimitWarning": true
 }
