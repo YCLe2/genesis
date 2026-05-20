@@ -1,4 +1,4 @@
-// 큐브용 이동 스크립트 (애니메이션 제거)
+// 큐브용 이동 스크립트 (애니메이션, Y축 이동 제거)
 
 using UnityEngine;
 
@@ -26,7 +26,10 @@ public class HardwareTagFollower : MonoBehaviour
 
     void Update()
     {
-        // 큐브를 목표 위치로 부드럽게 이동 (Lerp 보간)
-        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * moveSpeed);
+        // 🎯 핵심 수정: 목표 좌표의 X, Z만 가져오고, Y는 큐브의 현재 높이를 그대로 유지합니다.
+        Vector3 flatTargetPosition = new Vector3(targetPosition.x, transform.position.y, targetPosition.z);
+
+        // 큐브를 평면 목표 위치로 부드럽게 이동 (Lerp 보간)
+        transform.position = Vector3.Lerp(transform.position, flatTargetPosition, Time.deltaTime * moveSpeed);
     }
 }
