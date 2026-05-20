@@ -8,7 +8,7 @@ public class SpatialDigitalTwin : MonoBehaviour
 {
     [Header("Server Connection")]
     [Tooltip("파이썬 서버(ASUS 노트북 핫스팟)의 IP 주소입니다.")]
-    public string serverIp = "192.168.137.1";
+    public string serverIp = "192.168.100.1";
     public string port = "8000";
     
     [Header("Movement & Physical Filters")]
@@ -42,6 +42,7 @@ public class SpatialDigitalTwin : MonoBehaviour
                 yield return request.SendWebRequest();
                 if (request.result == UnityWebRequest.Result.Success) {
                     UpdateUnityScene(request.downloadHandler.text);
+                    Debug.Log("서버에서 받은 데이터: " + request.downloadHandler.text);
                 } else {
                     Debug.LogWarning("[Network] 서버 연결 실패. IP 주소를 확인하세요.");
                 }
