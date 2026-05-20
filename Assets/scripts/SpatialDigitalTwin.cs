@@ -105,7 +105,8 @@ public class SpatialDigitalTwin : MonoBehaviour
                     HardwareTagFollower follower = targetObj.GetComponent<HardwareTagFollower>();
 
                     // 🎯 물리 버튼이 눌렸을 때만 이동 및 회전 허용
-                    if (isButtonPressed) 
+                    // if (isButtonPressed) 
+                    if(true)
                     {
                         // 🎯 [필터 B] 데드존(Deadzone) 진동 상쇄 로직
                         // 현재 내 위치와 최종 목표 위치 간의 거리 차이를 계산
