@@ -23,8 +23,9 @@ public class SpatialDigitalTwin : MonoBehaviour
     [Header("Animation & Rotation Settings")]
     [Tooltip("캐릭터가 목표 지점까지 걸어가는(보간) 속도입니다.")]
     public float lerpSpeed = 20f;
-    [Tooltip("MPU 가속도 값을 캐릭터의 까딱거리는 회전 각도로 변환하는 배율입니다.")]
-    public float rotationSensitivity = 120f; 
+    
+    // [Tooltip("MPU 가속도 값을 캐릭터의 까딱거리는 회전 각도로 변환하는 배율입니다.")]
+    // public float rotationSensitivity = 120f; // 🎯 가속도 벡터(중력) 방식을 사용하므로 더 이상 필요하지 않습니다.
 
     [Tooltip("현실 세계의 정면을 유니티에서 어느 방향인지 Y축 회전값으로 설정")]
     public float yAxis_RotationOffset = 90f;
@@ -88,6 +89,7 @@ public class SpatialDigitalTwin : MonoBehaviour
                     float tagZ = (float)tags[tagId]["z"];
                     float accelX = tags[tagId]["accel_x"] != null ? (float)tags[tagId]["accel_x"] : 0f;
                     float accelY = tags[tagId]["accel_y"] != null ? (float)tags[tagId]["accel_y"] : 0f;
+                    float accelZ = tags[tagId]["accel_z"] != null ? (float)tags[tagId]["accel_z"] : 1f; // 🎯 Z축 가속도 데이터 추가 (기본값 1g)
 
                     // 1차 목표 좌표 (높이 Y는 캐릭터의 원래 높이 유지)
                     Vector3 rawTargetPos = new Vector3(tagX, targetObj.transform.position.y, tagZ);
@@ -126,15 +128,20 @@ public class SpatialDigitalTwin : MonoBehaviour
                             }
                         }
 
-                        // MPU 가속도를 이용한 부드러운 기울기 적용 (보간 Lerp 사용)
-                        // 🎯 MPU 까딱거림 회전(X, Z축)과 서버-유니티 방위 오프셋(Y축)을 합쳐 최종 목표 회전각을 계산합니다.
-                        Quaternion tiltRotation = Quaternion.Euler(accelY * rotationSensitivity, 0, -accelX * rotationSensitivity); // MPU 기울기
-                        Quaternion offsetRotation = Quaternion.Euler(0, yAxis_RotationOffset, 0); // 🎯 새로 추가: 방위 오프셋
+                        // 🎯 MPU 가속도를 이용한 부드러운 기울기 적용 (보간 Lerp 사용)
+                        // 1. 센서에서 들어온 가속도 값을 3D 벡터로 만듭니다.
+                        Vector3 accelVector = new Vector3(accelX, accelZ, accelY).normalized; 
 
-                        // 두 회전값을 곱하여 최종 목표 회전을 만듭니다.
+                        // 2. 위쪽(Vector3.up) 방향을 기준으로, 중력이 어느 쪽으로 쏠려 있는지 계산하여 오브젝트의 기울기를 구합니다.
+                        Quaternion tiltRotation = Quaternion.FromToRotation(Vector3.up, accelVector);
+
+                        // 3. 서버-유니티 방위 오프셋(Y축)을 적용합니다.
+                        Quaternion offsetRotation = Quaternion.Euler(0, yAxis_RotationOffset, 0); 
+
+                        // 4. 두 회전값을 곱하여 최종 목표 회전을 만듭니다. (오프셋을 먼저 적용 후 기울기 적용)
                         Quaternion targetRotation = offsetRotation * tiltRotation; 
 
-                        // 보간(Lerp)으로 부드럽게 적용
+                        // 5. 보간(Lerp)으로 부드럽게 회전 적용
                         targetObj.transform.rotation = Quaternion.Lerp(targetObj.transform.rotation, targetRotation, Time.deltaTime * lerpSpeed);
                     }
                     else 
